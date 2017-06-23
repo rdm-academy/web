@@ -1,0 +1,23 @@
+rdm.academy {
+  gzip
+
+  log stdout
+  errors stderr
+
+  templates /
+
+  root /www
+
+  proxy /api http://gateway:5000 {
+    without /api
+    fail_timeout 3s
+    max_fails 3
+    keepalive 5
+    insecure_skip_verify
+  }
+
+  rewrite {
+    if {path} not_match ^/api
+    to {path} {path}/ /index.html
+  }
+}
