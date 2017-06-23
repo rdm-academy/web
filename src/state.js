@@ -5,6 +5,8 @@ const initialState = {
     profile: null,
     error: null,
   },
+
+  projects: {},
 };
 
 export default initialState;

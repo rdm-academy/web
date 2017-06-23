@@ -32,6 +32,7 @@ const AnonymousNav = () => (
 
     <ul className="navbar-nav">
       <li className="nav-item">
+        <Link to="/login" className="nav-link">Login/Signup</Link>
       </li>
     </ul>
   </div>

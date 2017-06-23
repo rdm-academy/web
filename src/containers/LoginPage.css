@@ -1,0 +1,22 @@
+.auth0-lock.auth0-lock .auth0-lock-widget {
+  height: auto;
+  width: auto;
+  padding: 20px;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-widget-container .auth0-lock-header {
+  height: auto;
+  padding: 0;
+}
+
+.auth0-lock .auth0-lock-widget .auth0-lock-header-bg {
+  display: none;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-widget .auth0-lock-header-logo {
+  display: none;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-widget .auth0-lock-content {
+  padding: 0;
+}
