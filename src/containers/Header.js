@@ -57,7 +57,7 @@ class HeaderContainer extends Component {
     const { session } = this.props;
 
     let nav;
-    if (session.active) {
+    if (session.token) {
       nav = <UserNav profile={session.profile} onLogout={this.onLogout} />;
     }
     else {

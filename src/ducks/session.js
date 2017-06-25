@@ -19,20 +19,17 @@ export default (state = {}, action) => {
     case LOGIN:
       if (action.error) {
         return {
-          active: false,
           error: action.error,
         }
       }
 
+      // Payload contains token and profile.
       return {
-        active: true,
         ...action.payload,
       };
 
     case LOGOUT:
-      return {
-        active: false,
-      };
+      return {};
 
     default:
       return state;

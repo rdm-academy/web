@@ -51,7 +51,7 @@ class Login extends Component {
   render() {
     const { from } = this.props.location.state || { from: { pathname: '/projects' } };
 
-    if (this.props.session.active) {
+    if (this.props.session.token) {
       return <Redirect to={from} />;
     }
 
