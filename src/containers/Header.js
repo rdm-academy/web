@@ -38,16 +38,7 @@ const AnonymousNav = () => (
   </div>
 );
 
-const Header = ({ nav }) => (
-  <nav className="navbar navbar-light navbar-toggleable-sm fixed-top" style={{borderBottom: '1px solid #eee', backgroundColor: '#ffffff'}}>
-    <Link to="/" className="navbar-brand"><i className="fa fa-fw fa-flask" /> RDM Academy</Link>
-    {nav}
-  </nav>
-)
-
-
-// HeaderContainer
-class HeaderContainer extends Component {
+class Header extends Component {
   onLogout = () => {
     this.props.dispatch(sessionActions.logout());
     return false;
@@ -56,26 +47,29 @@ class HeaderContainer extends Component {
   render() {
     const { session } = this.props;
 
-    let nav;
-    if (session.token) {
-      nav = <UserNav profile={session.profile} onLogout={this.onLogout} />;
-    }
-    else {
-      nav = <AnonymousNav />;
-    }
+    const nav = session.token ? (
+      <UserNav
+        profile={session.profile}
+        onLogout={this.onLogout} />
+    ) : (
+      <AnonymousNav />
+    );
 
     return (
-      <Header nav={nav} />
+      <nav className="navbar navbar-light navbar-toggleable-sm fixed-top" style={{borderBottom: '1px solid #eee', backgroundColor: '#ffffff'}}>
+        <Link to="/" className="navbar-brand"><i className="fa fa-fw fa-flask" /> RDM Academy</Link>
+        {nav}
+      </nav>
     );
   }
 }
 
 
-HeaderContainer = connect(
+Header = connect(
   (state) => ({
     session: state.session,
   }),
-)(HeaderContainer);
+)(Header);
 
 
-export default HeaderContainer;
+export default Header;
