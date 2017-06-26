@@ -1,12 +1,10 @@
-const LOGIN = 'LOGIN';
+import { asyncType, asyncDispatcher } from '../actions';
+import api from '../api';
+
+const LOGIN = asyncType('LOGIN');
 const LOGOUT = 'LOGOUT';
 
-export function login(payload) {
-  return {
-    type: LOGIN,
-    payload: payload,
-  }
-}
+export const login = asyncDispatcher(LOGIN, api.client.login);
 
 export function logout() {
   return {
@@ -16,16 +14,15 @@ export function logout() {
 
 export default (state = {}, action) => {
   switch (action.type) {
-    case LOGIN:
-      if (action.error) {
-        return {
-          error: action.error,
-        }
-      }
-
-      // Payload contains token and profile.
+    case LOGIN.REQUEST:
+    case LOGIN.SUCCESS:
       return {
-        ...action.payload,
+        ...action.input,
+      };
+
+    case LOGIN.ERROR:
+      return {
+        error: action.error,
       };
 
     case LOGOUT:

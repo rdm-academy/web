@@ -131,6 +131,21 @@ class Client {
       handlers
     });
   }
+
+  //
+  // Public API
+  //
+
+  login = ({ token }) => {
+    this.token = token;
+
+    return this.call({
+      method: 'PUT',
+      path: '/account',
+      body: {},
+    })
+  }
+
 }
 
 export default {
