@@ -1,6 +1,8 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
+import SessionManager from 'containers/SessionManager';
+
 import Header from 'containers/Header';
 import Page from 'components/Page';
 
@@ -12,7 +14,7 @@ import UserProfilePage from 'containers/UserProfilePage';
 import ProjectListPage from 'containers/ProjectListPage';
 
 const App = () => (
-  <div>
+  <SessionManager>
     <Header />
 
     <Switch>
@@ -30,7 +32,7 @@ const App = () => (
         </Page>
       )} />
     </Switch>
-  </div>
+  </SessionManager>
 );
 
 
