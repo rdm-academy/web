@@ -50,7 +50,14 @@ function parseData(resp) {
 
 class Client {
   constructor() {
-    this.root = config.api.url;
+    this.url = config.api.url;
+
+    // Remove trailing slash.
+    const pos = this.url.length-1;
+    if (this.url.charAt(pos) === '/') {
+      this.url = this.url.slice(0, pos);
+    }
+
     this.token = null;
   }
 
@@ -102,19 +109,27 @@ class Client {
       .then(parseData)
   }
 
-  call = ({ path, body, handlers }) => {
-    const url = this.root + path;
-    return this.do({ url, body, handlers });
+  call = ({ method, path, body, handlers }) => {
+    if (path.charAt(0) !== '/') {
+      path = '/' + path;
+    }
+
+    const url = this.url + path;
+    return this.do({ method, url, body, handlers });
   }
 
-  callForm = ({ path, body, handlers }) => {
-    const data = new FormData();
+  callForm = ({ path, data , handlers }) => {
+    const body = new FormData();
 
-    Object.keys(body).forEach((key) => (
-      data.append(key, body[key])
+    Object.keys(data).forEach((key) => (
+      body.append(key, data[key])
     ));
 
-    return this.call({ path, body: data, handlers });
+    return this.call({
+      path,
+      body,
+      handlers
+    });
   }
 }
 
