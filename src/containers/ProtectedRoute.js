@@ -1,17 +1,19 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 
 let ProtectedRoute = ({ component: Component, session, ...rest }) => (
-  session.token ? <Component {...rest} /> : (
-    <Redirect to={{
-      pathname: '/login',
-      state: {
-        from: rest.location,
-      },
-    }} />
-  )
+  <Route {...rest} render={props => (
+    session.token ? (
+      <Component {...props} />
+    ) : (
+      <Redirect to={{
+        pathname: '/login',
+        state: { from: props.location },
+      }} />
+    )
+  )} />
 )
 
 ProtectedRoute = connect(
