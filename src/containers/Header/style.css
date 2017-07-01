@@ -1,0 +1,28 @@
+.Header {
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #ffffff;
+  box-shadow: 0 3px 2px -2px rgba(200, 200, 200, .15);
+  -webkit-font-smoothing: antialiased;
+}
+
+.Header .navbar-brand {
+  color: #777;
+  font-weight: 300;
+}
+
+.Header .navbar-brand:hover, .Header .navbar-brand:active {
+  color: #0176ff;
+}
+
+.Header .navbar-brand i.fa {
+  font-size: 0.8em;
+  position: relative;
+  bottom: 1px;
+  color: #0176ff;
+}
+
+.Header .navbar-brand strong {
+  font-weight: 600;
+  color: #000;
+}
+

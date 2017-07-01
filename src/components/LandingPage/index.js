@@ -19,10 +19,8 @@ export default () => (
     </div>
 
     <div className="row">
-      <div className="col text-center mt-5">
-        <h3 className="text-muted">Coming soon...</h3>
-
-        <img alt='Workflow' src={workflowImg} srcSet={`${workflowImg2x} 2x`} />
+      <div className="col-8 offset-2 mt-5">
+        <img alt='Workflow' style={{width: 'inherit'}} src={workflowImg} srcSet={`${workflowImg2x} 2x`} />
       </div>
     </div>
 

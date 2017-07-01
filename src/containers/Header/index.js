@@ -2,14 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import * as sessionActions from '../ducks/session';
+import config from 'config';
 
+import * as actions from 'ducks/session';
+
+import './style.css';
+
+const BrandLink = ({ url }) => (
+  <Link to={url} className="navbar-brand">
+    <i className="fa fa-flask" /> <strong>RDM</strong>ACADEMY
+  </Link>
+)
 
 const UserNav = ({ profile, onLogout }) => (
   <div className="collapse navbar-collapse">
+    <BrandLink url="/" />
+
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
         <Link to="/projects" className="nav-link">Projects</Link>
+      </li>
+      <li className="nav-item">
+        <a className="nav-link" href="https://docs.rdm.academy" target="_blank">Docs</a>
       </li>
     </ul>
 
@@ -27,12 +41,20 @@ const UserNav = ({ profile, onLogout }) => (
 // Header has the branding and application-wide navigation.
 const AnonymousNav = () => (
   <div className="collapse navbar-collapse">
+    <BrandLink url="/" />
+
     <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <a className="nav-link" href="https://docs.rdm.academy" target="_blank">Docs</a>
+      </li>
     </ul>
 
     <ul className="navbar-nav">
       <li className="nav-item">
-        <Link to="/login" className="nav-link">Login/Signup</Link>
+        <Link to="/login" className="nav-link">Login</Link>
+      </li>
+      <li className="nav-item">
+        <Link to="/signup" className="nav-link">Signup</Link>
       </li>
     </ul>
   </div>
@@ -40,7 +62,7 @@ const AnonymousNav = () => (
 
 class Header extends Component {
   onLogout = () => {
-    this.props.dispatch(sessionActions.logout());
+    this.props.dispatch(actions.logout());
     return false;
   }
 
@@ -56,20 +78,15 @@ class Header extends Component {
     );
 
     return (
-      <nav className="navbar navbar-light navbar-toggleable-sm fixed-top" style={{borderBottom: '1px solid #eee', backgroundColor: '#ffffff'}}>
-        <Link to="/" className="navbar-brand"><i className="fa fa-fw fa-flask" /> RDM Academy</Link>
+      <nav className="Header navbar navbar-light navbar-toggleable-sm fixed-top">
         {nav}
       </nav>
     );
   }
 }
 
-
-Header = connect(
+export default connect(
   (state) => ({
     session: state.session,
   }),
 )(Header);
-
-
-export default Header;

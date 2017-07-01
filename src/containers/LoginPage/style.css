@@ -1,7 +1,13 @@
+#login-container {
+}
+
 .auth0-lock.auth0-lock .auth0-lock-widget {
   height: auto;
   width: auto;
-  padding: 20px;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-widget-container .auth0-lock-cred-pane {
+  background: inherit;
 }
 
 .auth0-lock.auth0-lock .auth0-lock-widget-container .auth0-lock-header {
