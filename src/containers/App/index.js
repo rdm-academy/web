@@ -9,7 +9,7 @@ import ProtectedRoute from 'containers/ProtectedRoute';
 
 import LandingPage from 'components/LandingPage';
 import LoginPage from 'containers/LoginPage';
-import UserProfilePage from 'containers/UserProfilePage';
+import ProfilePage from 'containers/ProfilePage';
 
 import './style.css';
 
@@ -25,7 +25,7 @@ const App = () => (
         <LoginPage signup={true} />
       )} />
 
-      <ProtectedRoute exact path="/profile" component={UserProfilePage} />
+      <ProtectedRoute exact path="/profile" component={ProfilePage} />
 
       <Route render={({ location }) => (
         <Page>
