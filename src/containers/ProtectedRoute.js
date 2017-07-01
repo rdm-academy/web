@@ -3,24 +3,31 @@ import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 
-let ProtectedRoute = ({ component: Component, session, ...rest }) => (
+const ProtectedRoute = ({
+  component: Component,
+  fallback: Fallback,
+  redirect = '/login',
+  session,
+  ...rest
+}) => (
   <Route {...rest} render={props => (
     session.token ? (
       <Component {...props} />
     ) : (
-      <Redirect to={{
-        pathname: '/login',
-        state: { from: props.location },
-      }} />
+      redirect ? (
+        <Redirect to={{
+          pathname: redirect,
+          state: { from: props.location },
+        }} />
+      ) : (
+        <Fallback {...props} />
+      )
     )
   )} />
-)
+);
 
-ProtectedRoute = connect(
+export default connect(
   (state) => ({
     session: state.session,
   })
 )(ProtectedRoute);
-
-
-export default ProtectedRoute;
