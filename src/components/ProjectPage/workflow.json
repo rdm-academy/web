@@ -1,0 +1,123 @@
+{
+  "mimic-notes": {
+    "type": "data",
+    "title": "Extract of MIMIC III clinical notes"
+  },
+  "generate-word-embeddings": {
+    "type": "compute",
+    "title": "Generate word embeddings",
+    "input": [
+      "mimic-notes"
+    ],
+    "output": [
+      "word-embeddings-file"
+    ]
+  },
+  "word-embeddings-file": {
+    "type": "data",
+    "title": "MIMIC III derived word embeddings"
+  },
+  "clinical-notes": {
+    "type": "data",
+    "title": "Clinical notes extracted from the medical record"
+  },
+  "preprocess-notes": {
+    "type": "compute",
+    "title": "Preprocess clinical notes for neural net",
+    "input": [
+      "clinical-notes"
+    ],
+    "output": [
+      "processed-notes"
+    ]
+  },
+  "processed-notes": {
+    "type": "data",
+    "title": "Pre-processed notes"
+  },
+  "split-notes": {
+    "type": "compute",
+    "title": "Split notes for training and testing",
+    "input": [
+      "processed-notes"
+    ],
+    "output": [
+      "training-data",
+      "test-data"
+    ]
+  },
+  "training-data": {
+    "type": "data",
+    "title": "Neural net training data"
+  },
+  "test-data": {
+    "type": "data",
+    "title": "Neural net test data"
+  },
+  "nnet-training": {
+    "type": "compute",
+    "title": "Traing neural net with cross validation",
+    "input": [
+      "word-embeddings-file",
+      "training-data"
+    ],
+    "output": [
+      "cv-results"
+    ]
+  },
+  "cv-results": {
+    "type": "data",
+    "title": "Cross-validation results"
+  },
+  "cv-param-selection": {
+    "type": "compute",
+    "title": "CV hyperparameter selection",
+    "input": [
+      "cv-results"
+    ],
+    "output": [
+      "cv-params"
+    ]
+  },
+  "cv-params": {
+    "type": "data",
+    "title": "Cross-validation hyperparameters"
+  },
+  "nnet-test": {
+    "type": "compute",
+    "title": "Test neural net",
+    "input": [
+      "cv-params",
+      "test-data"
+    ],
+    "output": [
+      "nnet-results"
+    ]
+  },
+  "nnet-results": {
+    "type": "data",
+    "title": "Neural net evaluation results"
+  },
+  "error-analysis": {
+    "type": "compute",
+    "title": "Error analysis",
+    "input": [
+      "nnet-results"
+    ],
+    "output": [
+      "error-results"
+    ]
+  },
+  "error-results": {
+    "type": "data",
+    "title": "Error analysis results"
+  },
+  "manuscript": {
+    "type": "finding",
+    "title": "Manuscript",
+    "input": [
+      "cv-params",
+      "nnet-results"
+    ]
+  }
+}

@@ -1,30 +1,45 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import *  as projectListActions from '../ducks/projectList';
+import { withRouter, Link } from 'react-router-dom';
+
+import CenteredPage from 'components/CenteredPage';
+import Loader from 'components/Loader';
+import ProjectList from 'components/ProjectList';
+
+import * as actions from 'ducks/projectList';
 
 
 class ProjectListPage extends React.Component {
+  componentDidMount() {
+    this.props.dispatch(actions.getProjects());
+  }
+
   render() {
+    const { match, projects } = this.props;
+
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-4-md offset-md-4">
-            <h3>Projects</h3>
-            <p>Coming soon...</p>
-          </div>
+      <CenteredPage>
+        <div>
+          <Link to={`${match.url}/new`} className="btn btn-primary btn-sm float-right">
+            <i className="fa fa-plus" /> New
+          </Link>
+          <h5>Projects</h5>
         </div>
-      </div>
+
+        <hr />
+
+        { projects.loading ? <Loader /> : (
+            <ProjectList items={projects.data} />
+          )
+        }
+      </CenteredPage>
     );
   }
 }
 
 
-ProjectListPage = withRouter(connect(
+export default withRouter(connect(
   (state) => ({
-    projects: state.projects
+    projects: state.projectList
   }),
 )(ProjectListPage));
-
-
-export default ProjectListPage;

@@ -9,7 +9,11 @@ import ProtectedRoute from 'containers/ProtectedRoute';
 
 import LandingPage from 'components/LandingPage';
 import LoginPage from 'containers/LoginPage';
+
 import ProfilePage from 'containers/ProfilePage';
+import ProjectListPage from 'containers/ProjectListPage';
+import NewProjectPage from 'containers/NewProjectPage';
+import ProjectPage from 'components/ProjectPage';
 
 import './style.css';
 
@@ -26,6 +30,9 @@ const App = () => (
       )} />
 
       <ProtectedRoute exact path="/profile" component={ProfilePage} />
+      <ProtectedRoute exact path="/projects" component={ProjectListPage} />
+      <ProtectedRoute exact path="/projects/new" component={NewProjectPage} />
+      <ProtectedRoute path="/projects/:id" component={ProjectPage} />
 
       <Route render={({ location }) => (
         <Page>

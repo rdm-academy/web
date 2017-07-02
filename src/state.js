@@ -1,12 +1,11 @@
 const initialState = {
-  session: {
-    active: false,
-    token: null,
-    profile: null,
-    error: null,
-  },
+  session: {},
 
-  projects: {},
+  projectList: {},
+
+  projectForm: {},
+
+  projectIndex: {},
 };
 
 export default initialState;

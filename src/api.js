@@ -31,6 +31,7 @@ function handleError(resp) {
     let err = new Error(resp.statusText || 'http error: ' + resp.status);
     err.type = 'fetch';
     err.status = resp.status;
+    err.message = JSON.parse(resp.responseText).message;
     err.response = resp;
     err.url = resp.url;
     throw err;
@@ -146,6 +147,28 @@ class Client {
     })
   }
 
+
+  getProjects = () => (
+    this.call({
+      path: '/projects'
+    })
+  )
+
+  getProject = ({ id }) => (
+    this.call({
+      path: `/projects/${id}`
+    })
+  )
+
+  createProject = ({ name, description }) => (
+    this.call({
+      path: '/projects',
+      body: {
+        name: name,
+        description: description,
+      },
+    })
+  )
 }
 
 export default {
