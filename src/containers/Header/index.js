@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import config from 'config';
-
 import * as actions from 'ducks/session';
 
 import './style.css';
@@ -23,7 +21,7 @@ const UserNav = ({ profile, onLogout }) => (
         <Link to="/projects" className="nav-link">Projects</Link>
       </li>
       <li className="nav-item">
-        <a className="nav-link" href="https://docs.rdm.academy" target="_blank">Docs</a>
+        <a className="nav-link" href="https://docs.rdm.academy" target="_blank" rel="noopener noreferrer">Docs</a>
       </li>
     </ul>
 
@@ -45,7 +43,7 @@ const AnonymousNav = () => (
 
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <a className="nav-link" href="https://docs.rdm.academy" target="_blank">Docs</a>
+        <a className="nav-link" href="https://docs.rdm.academy" target="_blank" rel="noopener noreferrer">Docs</a>
       </li>
     </ul>
 

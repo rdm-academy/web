@@ -9,12 +9,10 @@ class ProfilePage extends React.Component {
     const { profile } = this.props;
 
     // Parse subject to get the profile name and id.
-    let [ provider, _ ] = profile.sub.split('|', 2);
+    let [ provider ] = profile.sub.split('|', 2);
 
-    switch (provider) {
-    case "github":
+    if (provider === 'github') {
       provider = "GitHub";
-      break;
     }
 
     return (
