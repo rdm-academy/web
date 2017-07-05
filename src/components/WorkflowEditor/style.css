@@ -1,0 +1,59 @@
+.WorkflowEditor {
+  font-size: 14px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.WorkflowEditor .WorkflowEditor-editor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 70%;
+  width: 40%;
+  overflow: auto;
+  border-bottom: 1px solid #ccc;
+}
+
+.WorkflowEditor .WorkflowEditor-console {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 30%;
+  width: 40%;
+  overflow: auto;
+
+  box-shadow: 0 -2px 4px #ddd;
+  padding: 20px;
+  font-family: Hack, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.WorkflowEditor .WorkflowEditor-console ul {
+  padding-left: 25px;
+}
+
+.WorkflowEditor .WorkflowEditor-editor .CodeMirror {
+  height: auto;
+}
+
+.WorkflowEditor .WorkflowEditor-editor .CodeMirror pre {
+  font-family: Hack, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.WorkflowEditor .WorkflowEditor-preview {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 60%;
+  height: 100%;
+  border-left: 1px solid #ccc;
+}
+
+.WorkflowEditor .WorkflowEditor-preview.invalid {
+  opacity: 0.3;
+}
