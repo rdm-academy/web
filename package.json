@@ -28,7 +28,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
-    "@kadira/storybook": "^2.35.3",
+    "@storybook/react": "^3.1.7",
     "babel-preset-env": "^1.5.2",
     "react-scripts": "1.0.7",
     "webpack": "^3.0.0"
@@ -39,7 +39,7 @@
     "test": "NODE_PATH=src react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "./node_modules/eslint/bin/eslint.js src/",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "storybook": "NODE_PATH=src start-storybook -p 9009 -s public -c .storybook",
+    "build-storybook": "NODE_PATH=src build-storybook -s public"
   }
 }
