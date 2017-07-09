@@ -30,7 +30,7 @@ const UserNav = ({ profile, onLogout }) => (
         <Link to="/profile" className="nav-link">Profile</Link>
       </li>
       <li className="nav-item">
-        <button className="btn btn-secondary nav-link" onClick={onLogout}>Logout</button>
+        <a href="#" className="nav-link" onClick={onLogout}>Logout</a>
       </li>
     </ul>
   </div>
@@ -59,9 +59,9 @@ const AnonymousNav = () => (
 );
 
 class Header extends Component {
-  onLogout = () => {
+  onLogout = (event) => {
+    event.preventDefault();
     this.props.dispatch(actions.logout());
-    return false;
   }
 
   render() {
