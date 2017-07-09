@@ -18,10 +18,10 @@ const UserNav = ({ profile, onLogout }) => (
 
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <Link to="/projects" className="nav-link">Projects</Link>
+        <a className="nav-link" href="https://learn.rdm.academy" target="_blank" rel="noopener noreferrer">Learn</a>
       </li>
       <li className="nav-item">
-        <a className="nav-link" href="https://docs.rdm.academy" target="_blank" rel="noopener noreferrer">Docs</a>
+        <Link to="/projects" className="nav-link">Projects</Link>
       </li>
     </ul>
 
@@ -43,7 +43,7 @@ const AnonymousNav = () => (
 
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <a className="nav-link" href="https://docs.rdm.academy" target="_blank" rel="noopener noreferrer">Docs</a>
+        <a className="nav-link" href="https://learn.rdm.academy" target="_blank" rel="noopener noreferrer">Learn</a>
       </li>
     </ul>
 
