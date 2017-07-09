@@ -22,7 +22,7 @@ const parseData = (data = {}) => {
         type: node.type,
         title: node.title,
       },
-      classes: `Graph-node Graph-node-${node.type}`,
+      classes: node.type,
     });
 
     // Inputs this compute, manual, or finding node requires.
@@ -36,7 +36,7 @@ const parseData = (data = {}) => {
             source: iid,
             target: id,
           },
-          classes: 'Graph-edge Graph-edge-input',
+          classes: 'input',
         });
       });
     }
@@ -50,7 +50,7 @@ const parseData = (data = {}) => {
             source: id,
             target: oid,
           },
-          classes: 'Graph-edge Graph-edge-output',
+          classes: 'output',
         });
       });
     }
@@ -100,36 +100,36 @@ const renderCytoscape = (container, elements) => {
         },
       },
       {
-        selector: 'node.Graph-node-active',
+        selector: 'node.active',
         style: {
           borderStyle: 'dashed',
         },
       },
       {
-        selector: 'node.Graph-node-data',
+        selector: 'node.data',
         style: {
           borderColor: '#0275d8',
         },
       },
       {
-        selector: 'node.Graph-node-compute',
+        selector: 'node.compute',
         style: {
           borderColor: 'gold',
         },
       },
       {
-        selector: 'node.Graph-node-manual',
+        selector: 'node.manual',
         style: {
         },
       },
       {
-        selector: 'node.Graph-node-finding',
+        selector: 'node.finding',
         style: {
           borderColor: 'saddlebrown',
         },
       },
       {
-        selector: 'edge.Graph-edge-output',
+        selector: 'edge.output',
         style: {
           lineStyle: 'dashed',
           targetArrowColor: '#777',
@@ -138,7 +138,7 @@ const renderCytoscape = (container, elements) => {
         },
       },
       {
-        selector: 'edge.Graph-edge-input',
+        selector: 'edge.input',
         style: {
           sourceArrowShape: 'triangle',
           sourceArrowColor: '#777',
@@ -152,18 +152,18 @@ const renderCytoscape = (container, elements) => {
 
 
 class WorkflowGraph extends React.Component {
-  focusNode = ({ id, initial }) => {
+  focusNode = ({ id }) => {
     const node = this.cy.$id(id);
 
     this.cy.batch(() => {
-      this.cy.$('.Graph-node-active')
-        .removeClass('Graph-node-active');
+      this.cy.$('node.active')
+        .removeClass('active');
 
-      node.addClass('Graph-node-active');
+      node.addClass('active');
 
       this.cy
-        .zoom(0.7)
-        .fit(node, 200)
+        .zoom(1.2)
+        .center(node)
         .panBy({x: -200});
     });
   }
@@ -194,7 +194,6 @@ class WorkflowGraph extends React.Component {
       this.cy.ready(() => {
         this.focusNode({
           id: this.props.node,
-          initial: true,
         });
       });
     }
@@ -222,7 +221,6 @@ class WorkflowGraph extends React.Component {
       this.cy.ready(() => {
         this.focusNode({
           id: this.props.node,
-          initial: true,
         });
       });
     }
