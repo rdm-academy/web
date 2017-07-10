@@ -60,7 +60,7 @@ const parseData = (data = {}) => {
 }
 
 const renderCytoscape = (container, elements) => {
-  return cytoscape({
+  const g = cytoscape({
     container: container,
     elements: elements,
     layout: {
@@ -79,7 +79,7 @@ const renderCytoscape = (container, elements) => {
           borderStyle: 'solid',
           borderColor: '#ccc',
           padding: '20px',
-          content: 'data(title)',
+          label: 'data(title)',
           color: '#111',
           fontFamily: '"Helvetica Neue"',
           fontSize: '16px',
@@ -138,15 +138,49 @@ const renderCytoscape = (container, elements) => {
         },
       },
       {
+        selector: 'edge.hover',
+        style: {
+          color: '#111',
+          textBackgroundColor: '#fff',
+          textBackgroundOpacity: 0.8,
+          textBackgroundPadding: '5px',
+          fontFamily: '"Helvetica Neue"',
+          fontSize: '16px',
+          fontWeight: 400,
+        },
+      },
+      {
+        selector: 'edge.output.hover',
+        style: {
+          label: 'output',
+        },
+      },
+      {
         selector: 'edge.input',
         style: {
-          sourceArrowShape: 'triangle',
-          sourceArrowColor: '#777',
-          sourceArrowFill: 'filled',
+          targetArrowShape: 'triangle',
+          targetArrowColor: '#777',
+          targetArrowFill: 'filled',
         },
-      }
+      },
+      {
+        selector: 'edge.input.hover',
+        style: {
+          label: 'input',
+        },
+      },
     ],
   });
+
+  g.$('edge')
+    .on('mouseover', (evt) => {
+      evt.target.addClass('hover');
+    })
+    .on('mouseout', (evt) => {
+      evt.target.removeClass('hover');
+    });
+
+  return g;
 }
 
 
