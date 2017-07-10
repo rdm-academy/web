@@ -166,8 +166,8 @@ class Client {
     this.call({
       path: '/projects',
       body: {
-        name: name,
-        description: description,
+        name,
+        description,
       },
     })
   )
