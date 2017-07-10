@@ -27,11 +27,13 @@ function parseSource(s) {
 
   if (!isObject(obj)) return {};
 
-  for (let id in obj) {
-    if (!isObject(obj[id])) {
+  Object.keys(obj).forEach((id) => {
+    let node = obj[id];
+    if (!isObject(node)) {
       obj[id] = {};
+      return;
     }
-  }
+  });
 
   return obj;
 }
@@ -96,31 +98,31 @@ const createGraph = (data = {}) => {
 
 
 
-const atLeastOneInput = (node) => {
+const atLeastOneInput = ({ node }) => {
   if (!node.input || node.input.length === 0) {
     return ['at least one input required'];
   }
 }
 
-const atLeastOneOutput = (node) => {
+const atLeastOneOutput = ({ node }) => {
   if (!node.output || node.output.length === 0) {
     return ['at least one output required'];
   }
 }
 
-const checkInputs = (node, elems) => {
+const checkInputs = ({ node, data }) => {
   if (!node.input) return [];
 
   const errs = [];
   node.input.forEach((id) => {
     // Unknown node.
-    if (!elems[id]) {
+    if (!data[id]) {
       errs.push(`unknown input: ${id}`);
       return;
     }
 
     // Non-data input.
-    if (elems[id].type !== 'data') {
+    if (data[id].type !== 'data') {
       errs.push(`input is not data: ${id}`);
     }
   });
@@ -129,19 +131,19 @@ const checkInputs = (node, elems) => {
 }
 
 
-const checkOutputs = (node, elems) => {
+const checkOutputs = ({ node, data }) => {
   if (!node.output) return [];
 
   const errs = [];
   node.output.forEach((id) => {
     // Unknown node.
-    if (!elems[id]) {
+    if (!data[id]) {
       errs.push(`unknown output: ${id}`);
       return;
     }
 
     // Non-data output.
-    if (elems[id].type !== 'data') {
+    if (data[id].type !== 'data') {
       errs.push(`output is not data: ${id}`);
     }
   });
@@ -149,13 +151,13 @@ const checkOutputs = (node, elems) => {
   return errs;
 }
 
-const noInputOrOutput = (node) => {
+const noInputOrOutput = ({ node }) => {
   if (node.input || node.output) {
     return ['data cannot declare input or output'];
   }
 }
 
-const validType = (node) => {
+const validType = ({ node }) => {
   if (!node.type) return;
 
   switch (node.type) {
@@ -169,7 +171,15 @@ const validType = (node) => {
   }
 }
 
-const requiredProps = (node) => {
+const typeChange = ({ node, inputData }) => {
+  const inode = inputData[node.id];
+  if (!inode) return;
+  if (inode.type !== node.type) {
+    return [`cannot change type: ${inode.type} => ${node.type}`]
+  }
+}
+
+const requiredProps = ({ node }) => {
   const errs = [];
 
   if (!node.type) {
@@ -200,8 +210,7 @@ const checkForCycle = (node, path = [], errs = []) => {
   return errs;
 }
 
-
-const checkDataCycles = (node, _, graph) => {
+const checkDataCycles = ({ node, graph }) => {
   const errs = [];
 
   graph.$id(node.id).forEach((n) => {
@@ -215,6 +224,7 @@ const checkDataCycles = (node, _, graph) => {
 const nodeChecks = [
   requiredProps,
   validType,
+  typeChange,
 ];
 
 const nodeTypeChecks = {
@@ -240,27 +250,28 @@ const nodeTypeChecks = {
 
 const graphChecks = [];
 
-const validateGraph = (data) => {
+const validateGraph = (data, inputData) => {
   const graph = createGraph(data);
   if (!graph) return;
 
   const errors = {};
-  let node, errs;
+  let node, errs, args;
 
   for (let id in data) {
     node = data[id];
     node.id = id;
 
     errs = [];
+    args = { node, data, graph, inputData };
 
     nodeChecks.forEach((check) => {
-      const cerrs = check(node, data, graph);
+      const cerrs = check(args);
       if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
     });
 
     if (nodeTypeChecks[node.type]) {
       nodeTypeChecks[node.type].forEach((check) => {
-        const cerrs = check(node, data, graph);
+        const cerrs = check(args);
         if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
       });
     }
@@ -272,8 +283,10 @@ const validateGraph = (data) => {
 
   // Graph-wide checks.
   errs = [];
+  args = { data, graph, inputData };
+
   graphChecks.forEach((check) => {
-    const cerrs = check(graph);
+    const cerrs = check(args);
     if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
   })
 
@@ -295,6 +308,8 @@ class WorkflowEditor extends React.Component {
 
     this.state = {
       source: props.source || '',
+      inputSource: props.source || '',
+      inputElems: parseSource(props.source || ''),
       elems: {},
       syntaxError: null,
       validationErrors: null,
@@ -339,7 +354,7 @@ class WorkflowEditor extends React.Component {
       return true;
     }
 
-    const validationErrors = validateGraph(elems);
+    const validationErrors = validateGraph(elems, this.state.inputElems);
 
     if (validationErrors) {
       this.setState({
