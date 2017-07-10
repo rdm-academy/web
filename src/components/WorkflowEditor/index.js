@@ -318,10 +318,9 @@ class WorkflowEditor extends React.Component {
     }
   }
 
-  validate = ( source ) => {
+  validate = (source) => {
     let elems = null,
-        syntaxError = null,
-        validationErrors = null;
+      syntaxError = null;
 
     try {
       elems = parseSource(source);
@@ -329,48 +328,39 @@ class WorkflowEditor extends React.Component {
       syntaxError = e;
     }
 
-    let output;
-
     if (syntaxError) {
-      output = (
-        <div className="text-danger"><strong>Parse error.</strong></div>
-      );
-    } else {
-      if (Object.keys(elems).length > 0) {
-        validationErrors = validateGraph(elems);
+      this.setState({
+        source,
+        syntaxError,
+        invalid: true,
+        validationErrors: null,
+      });
 
-        if (Object.keys(validType).length === 0) {
-          output = <div className="text-success">Looks good!</div>
-        } else {
-          output = (
-            <div className="text-danger">
-              {
-                Object.keys(validationErrors).map((id) => (
-                  <div key={id}>
-                    <strong>{id}</strong>
-                    <ul>
-                      { validationErrors[id].map((msg, i) => <li key={i}>{msg}</li>) }
-                    </ul>
-                  </div>
-                ))
-              }
-            </div>
-          );
-        }
-      }
+      return true;
     }
 
-    const invalid = !!(syntaxError || validationErrors);
+    const validationErrors = validateGraph(elems);
+
+    if (validationErrors) {
+      this.setState({
+        source,
+        validationErrors,
+        invalid: true,
+        syntaxError: null,
+      });
+
+      return true;
+    }
 
     this.setState({
       source,
-      invalid,
-      elems: invalid ? this.state.elems : elems,
-      syntaxError: syntaxError,
-      validationErrors: validationErrors,
+      elems,
+      invalid: false,
+      validationErrors: null,
+      syntaxError: null,
     });
 
-    return invalid;
+    return false;
   }
 
   render() {
