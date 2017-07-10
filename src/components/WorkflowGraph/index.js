@@ -162,7 +162,7 @@ class WorkflowGraph extends React.Component {
       node.addClass('active');
 
       this.cy
-        .zoom(1.2)
+        .zoom(0.9)
         .center(node)
         .panBy({x: -200});
     });
