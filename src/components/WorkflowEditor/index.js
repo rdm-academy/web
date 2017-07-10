@@ -1,9 +1,6 @@
 import React from 'react';
 import cytoscape from 'cytoscape';
-
-// Make it global for the YAML linter.
 import YAML from 'js-yaml';
-window.jsyaml = YAML;
 
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
@@ -13,14 +10,34 @@ import 'codemirror/addon/lint/yaml-lint';
 import 'codemirror/addon/lint/lint.css';
 
 import WorkflowGraph from 'components/WorkflowGraph';
+import debounce from 'utils/debounce';
 
 import './style.css';
 
-const createGraph = (data = {}) => {
-  if (typeof data !== 'object') {
-    return cytoscape();
+// Make it global for the YAML linter.
+window.jsyaml = YAML;
+
+
+function isObject(o) {
+  return o && typeof o === 'object' && !Object.hasOwnProperty(o, 'length');
+}
+
+function parseSource(s) {
+  const obj = YAML.safeLoad(s);
+
+  if (!isObject(obj)) return {};
+
+  for (let id in obj) {
+    if (!isObject(obj[id])) {
+      obj[id] = {};
+    }
   }
 
+  return obj;
+}
+
+
+const createGraph = (data = {}) => {
   const elems = [];
 
   let node;
@@ -41,6 +58,9 @@ const createGraph = (data = {}) => {
     // This is a directed edge from this node to the input.
     if (node.input) {
       node.input.forEach((iid) => {
+        // Skip edges to unknown nodes.
+        if (!data[iid]) return;
+
         elems.push({
           group: 'edges',
           data: {
@@ -54,6 +74,9 @@ const createGraph = (data = {}) => {
 
     if (node.output) {
       node.output.forEach((oid) => {
+        // Skip edges to unknown nodes.
+        if (!data[oid]) return;
+
         elems.push({
           group: 'edges',
           data: {
@@ -81,7 +104,7 @@ const atLeastOneInput = (node) => {
 
 const atLeastOneOutput = (node) => {
   if (!node.output || node.output.length === 0) {
-    return 'at least one output required';
+    return ['at least one output required'];
   }
 }
 
@@ -160,6 +183,35 @@ const requiredProps = (node) => {
   return errs;
 }
 
+const checkForCycle = (node, path = [], errs = []) => {
+  const id = node.id();
+
+  node.outgoers('node').forEach((out) => {
+    const oid = out.id();
+
+    if (path.indexOf(oid) >= 0) {
+      errs.push(`cycle exists: ${path.concat([id, oid]).join(' -> ')}`);
+      return;
+    }
+
+    checkForCycle(out, path.concat([id]), errs)
+  });
+
+  return errs;
+}
+
+
+const checkDataCycles = (node, _, graph) => {
+  const errs = [];
+
+  graph.$id(node.id).forEach((n) => {
+    const cerrs = checkForCycle(n);
+    if (cerrs.length) [].push.apply(errs, cerrs);
+  });
+
+  return errs;
+}
+
 const nodeChecks = [
   requiredProps,
   validType,
@@ -186,38 +238,12 @@ const nodeTypeChecks = {
   ],
 };
 
-function checkForCycle(node, path = [], errs = []) {
-  const id = node.id();
-
-  node.outgoers('node').forEach((out) => {
-    const oid = out.id();
-
-    if (path.indexOf(oid) >= 0) {
-      errs.push(`cycle exists: ${path.concat([id, oid]).join(' -> ')}`);
-      return;
-    }
-
-    checkForCycle(out, path.concat([id]), errs)
-  });
-
-  return errs;
-}
-
-
-function checkDataCycles(node, _, graph) {
-  const errs = [];
-
-  graph.$id(node.id).forEach((n) => {
-    const cerrs = checkForCycle(n);
-    if (cerrs.length) [].push.apply(errs, cerrs);
-  });
-
-  return errs;
-}
-
 const graphChecks = [];
 
-const validateGraph = (data, graph) => {
+const validateGraph = (data) => {
+  const graph = createGraph(data);
+  if (!graph) return;
+
   const errors = {};
   let node, errs;
 
@@ -229,13 +255,13 @@ const validateGraph = (data, graph) => {
 
     nodeChecks.forEach((check) => {
       const cerrs = check(node, data, graph);
-      if (cerrs) [].push.apply(errs, cerrs);
+      if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
     });
 
     if (nodeTypeChecks[node.type]) {
       nodeTypeChecks[node.type].forEach((check) => {
         const cerrs = check(node, data, graph);
-        if (cerrs) [].push.apply(errs, cerrs);
+        if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
       });
     }
 
@@ -248,11 +274,15 @@ const validateGraph = (data, graph) => {
   errs = [];
   graphChecks.forEach((check) => {
     const cerrs = check(graph);
-    if (cerrs) [].push.apply(errs, cerrs);
+    if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
   })
 
   if (errs.length) {
     errors['graph'] = errs;
+  }
+
+  if (Object.keys(errors).length === 0) {
+    return;
   }
 
   return errors;
@@ -264,45 +294,62 @@ class WorkflowEditor extends React.Component {
     super(props);
 
     this.state = {
-      text: props.text || '',
+      source: props.source || '',
+      elems: {},
+      syntaxError: null,
+      validationErrors: null,
     };
+
+    this.onChange = debounce(this.onChange, 100);
   }
 
-  render() {
-    const text = this.state.text;
+  componentWillMount() {
+    this.validate(this.state.source);
+  }
 
-    let elems, invalid, syntaxError;
+  onChange = ( source ) => {
+    const invalid = this.validate(source);
+
+    if (this.props.onChange) {
+      this.props.onChange({
+        source,
+        invalid,
+      });
+    }
+  }
+
+  validate = ( source ) => {
+    let elems = null,
+        syntaxError = null,
+        validationErrors = null;
+
     try {
-      elems = YAML.safeLoad(text) || {};
+      elems = parseSource(source);
     } catch (e) {
       syntaxError = e;
-      invalid = true;
     }
 
     let output;
+
     if (syntaxError) {
       output = (
         <div className="text-danger"><strong>Parse error.</strong></div>
       );
     } else {
       if (Object.keys(elems).length > 0) {
-        const graph = createGraph(elems);
-        const errors = validateGraph(elems, graph);
+        validationErrors = validateGraph(elems);
 
-        if (Object.keys(errors).length === 0) {
+        if (Object.keys(validType).length === 0) {
           output = <div className="text-success">Looks good!</div>
-          this.elems = elems;
         } else {
-          invalid = true;
-
           output = (
             <div className="text-danger">
               {
-                Object.keys(errors).map((id) => (
+                Object.keys(validationErrors).map((id) => (
                   <div key={id}>
                     <strong>{id}</strong>
                     <ul>
-                      { errors[id].map((msg, i) => <li key={i}>{msg}</li>) }
+                      { validationErrors[id].map((msg, i) => <li key={i}>{msg}</li>) }
                     </ul>
                   </div>
                 ))
@@ -313,20 +360,59 @@ class WorkflowEditor extends React.Component {
       }
     }
 
+    const invalid = !!(syntaxError || validationErrors);
+
+    this.setState({
+      source,
+      invalid,
+      elems: invalid ? this.state.elems : elems,
+      syntaxError: syntaxError,
+      validationErrors: validationErrors,
+    });
+
+    return invalid;
+  }
+
+  render() {
+    const { source, elems, invalid, validationErrors, syntaxError } = this.state;
+
+    let output;
+
+    if (syntaxError) {
+      output = (
+        <div className="text-danger">
+          <strong>Parse error.</strong>
+        </div>
+      );
+    } else if (validationErrors) {
+      output = (
+        <div className="text-danger">
+          {
+            Object.keys(validationErrors).map((id) => (
+              <div key={id}>
+                <strong>{id}</strong>
+                <ul>
+                  { validationErrors[id].map((msg, i) => (
+                    <li key={i}>{msg}</li>
+                  )) }
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      );
+    } else {
+      output = (
+        <div className="text-success">Looks good!</div>
+      );
+    }
+
     return (
       <div className="WorkflowEditor">
         <div className="WorkflowEditor-editor">
           <CodeMirror
-            value={text}
-            onChange={(text) => {
-              this.setState({
-                text: text,
-              });
-
-              if (this.props.onChange) {
-                this.props.onChange(text);
-              }
-            }}
+            value={source}
+            onChange={this.onChange}
             options={{
               mode: 'yaml',
               indentWithTabs: false,
