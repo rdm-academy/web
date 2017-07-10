@@ -45,6 +45,11 @@ code {
   background-color: #0275d8;
 }
 
+.btn[disabled] {
+  color: #999;
+  background-color: inherit;
+}
+
 .form-control {
   border-radius: 0;
 }
