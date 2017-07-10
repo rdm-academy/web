@@ -297,7 +297,22 @@ const nodeTypeChecks = {
   ],
 };
 
-const graphChecks = [];
+const checkRemoved = ({ data, inputData }) => {
+  const errs = [];
+
+  for (let id in inputData) {
+    let node = data[id];
+    if (!node) {
+      errs.push(`cannot remove node "${id}". use "deprecated: true" instead`);
+    }
+  }
+
+  return errs;
+}
+
+const graphChecks = [
+  checkRemoved,
+];
 
 const validateGraph = (data, inputData) => {
   const graph = createGraph(data);
