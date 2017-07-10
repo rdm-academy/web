@@ -46,7 +46,9 @@ function parseData(resp) {
     return data;
   });
   */
-  return JSON.parse(resp);
+  try {
+    return JSON.parse(resp);
+  } catch (e) {}
 }
 
 class Client {
