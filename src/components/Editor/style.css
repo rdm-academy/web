@@ -1,0 +1,40 @@
+.Editor {
+  font-size: 14px;
+}
+
+.Editor.Editor-editor {
+  font-size: 12px;
+}
+
+.Editor.Editor-editor .CodeMirror {
+  min-height: 100px;
+  height: auto;
+}
+
+.Editor.Editor-editor .CodeMirror .CodeMirror-line {
+  padding: 0;
+}
+
+.Editor.Editor-editor .CodeMirror .CodeMirror-lines {
+  padding: 0;
+}
+
+.Editor.Editor-editor .CodeMirror pre {
+  font-family: Hack, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.Editor.Editor-preview {
+  min-height: 100px;
+}
+
+.Editor.Editor-preview pre {
+  background-color: #eee;
+  border-radius: 3px;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.Editor.Editor-preview :last-child {
+  margin-bottom: 0;
+}
