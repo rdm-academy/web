@@ -162,6 +162,16 @@ class Client {
     })
   )
 
+  updateWorkflow = ({ id, source }) => (
+    this.call({
+      method: 'PUT',
+      path: `/projects/${id}/workflow`,
+      body: {
+        source,
+      }
+    })
+  )
+
   createProject = ({ name, description }) => (
     this.call({
       path: '/projects',
