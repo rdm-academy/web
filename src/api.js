@@ -1,6 +1,14 @@
 import 'whatwg-fetch';
 import config from './config';
 
+class ConnectionRefusedError extends Error {
+  message = 'Server refused the connection.';
+}
+
+class UnknownError extends Error {
+  message = 'Unknown error';
+}
+
 
 function futch(url, opts={}, onProgress) {
   return new Promise((res, rej) => {
@@ -26,7 +34,14 @@ function futch(url, opts={}, onProgress) {
   });
 }
 
-function handleError(resp) {
+function handleError({ target: xhr }) {
+  if (xhr.status === 0) {
+    throw new ConnectionRefusedError();
+  }
+  throw new UnknownError();
+}
+
+function handleStatusError(resp) {
   if (resp.status >= 400) {  // fetch -> !resp.ok
     let err = new Error(resp.statusText || 'http error: ' + resp.status);
     err.type = 'fetch';
@@ -108,8 +123,9 @@ class Client {
 
     // Perform the fetch and check for unexpected errors.
     return futch(url, options, handlers.onProgress)
-      .then(handleError)
-      .then(parseData)
+      .catch(handleError)
+      .then(handleStatusError)
+      .then(parseData);
   }
 
   call = ({ method, path, body, handlers }) => {
