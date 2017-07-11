@@ -28,7 +28,7 @@ class NewProjectPage extends React.Component {
 
     return (
       <CenteredPage>
-        <h5>Create new project</h5>
+        <h5>Create project</h5>
 
         <hr />
         { error ? <div className="alert alert-danger">{ error.message }</div> : undefined }
