@@ -1,7 +1,6 @@
 import React from 'react';
 
-import workflowImg from './workflow.png';
-import workflowImg2x from './workflow@2x.png';
+import screenshot from './screen.png';
 
 
 export default () => (
@@ -44,7 +43,14 @@ export default () => (
 
     <div className="row">
       <div className="col-8 offset-2 mt-5">
-        <img alt='Workflow' style={{width: 'inherit'}} src={workflowImg} srcSet={`${workflowImg2x} 2x`} />
+        <img alt='Workflow'
+          style={{
+            width: 'inherit',
+            backgroundColor: '#fff',
+            padding: '15px',
+            boxShadow: '1px 1px 3px #ccc',
+            marginBottom: '10px',
+          }} src={screenshot} srcSet={`${screenshot} 2x`} />
       </div>
     </div>
 
