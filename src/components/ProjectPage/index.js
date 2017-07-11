@@ -6,7 +6,6 @@ import Loader from 'components/Loader';
 import * as actions from 'ducks/projectIndex';
 
 import Header from './Header';
-import Overview from './Overview';
 import Workflow from './Workflow';
 import WorkflowEditor from './WorkflowEditor';
 import NodeDetail from './NodeDetail';

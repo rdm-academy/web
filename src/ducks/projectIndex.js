@@ -67,7 +67,6 @@ export default (state = {}, action) => {
       return Object.assign({}, state, {
         [action.input.id]: updateWorkflowReducer(state[action.input.id], action)
       });
-      break;
 
     case GET_PROJECT.REQUEST:
     case GET_PROJECT.SUCCESS:
@@ -76,7 +75,6 @@ export default (state = {}, action) => {
       return Object.assign({}, state, {
         [action.input.id]: getProjectReducer(state[action.input.id], action)
       });
-      break;
 
     default:
       return state;

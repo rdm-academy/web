@@ -31,6 +31,10 @@ code {
   border-width: 2px;
 }
 
+.btn.btn-link {
+  cursor: pointer;
+}
+
 .btn:focus {
   outline: none;
   box-shadow: none;

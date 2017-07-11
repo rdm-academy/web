@@ -30,7 +30,7 @@ const UserNav = ({ profile, onLogout }) => (
         <Link to="/profile" className="nav-link">Profile</Link>
       </li>
       <li className="nav-item">
-        <a href="#" className="nav-link" onClick={onLogout}>Logout</a>
+        <button className="nav-link btn btn-link" onClick={onLogout}>Logout</button>
       </li>
     </ul>
   </div>

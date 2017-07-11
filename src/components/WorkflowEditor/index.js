@@ -314,6 +314,13 @@ const graphChecks = [
   checkRemoved,
 ];
 
+function applyCheck(errs, args) {
+  return (check) => {
+    const cerrs = check(args);
+    if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
+  }
+}
+
 const validateGraph = (data, inputData) => {
   const graph = createGraph(data);
   if (!graph) return;
@@ -328,16 +335,10 @@ const validateGraph = (data, inputData) => {
     errs = [];
     args = { node, data, graph, inputData };
 
-    nodeChecks.forEach((check) => {
-      const cerrs = check(args);
-      if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
-    });
+    nodeChecks.forEach(applyCheck(errs, args));
 
     if (nodeTypeChecks[node.type]) {
-      nodeTypeChecks[node.type].forEach((check) => {
-        const cerrs = check(args);
-        if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
-      });
+      nodeTypeChecks[node.type].forEach(applyCheck(errs, args));
     }
 
     if (errs.length) {
@@ -349,10 +350,7 @@ const validateGraph = (data, inputData) => {
   errs = [];
   args = { data, graph, inputData };
 
-  graphChecks.forEach((check) => {
-    const cerrs = check(args);
-    if (cerrs && cerrs.length) errs.push.apply(errs, cerrs);
-  })
+  graphChecks.forEach(applyCheck(errs, args));
 
   if (errs.length) {
     errors['graph'] = errs;
