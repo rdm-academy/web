@@ -9,7 +9,7 @@ import { ConnectedRouter } from 'react-router-redux';
 
 import { startPersistingState, fetchPersistedState } from './persister';
 
-import registerServiceWorker from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
 
 import configureStore from './store';
 import initialState from './state';
@@ -50,4 +50,4 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-// registerServiceWorker();
+unregister();
