@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Link, Redirect } from 'react-router-dom';
 
 import CenteredPage from 'components/CenteredPage';
 import Loader from 'components/Loader';
@@ -17,6 +17,19 @@ class ProjectListPage extends React.Component {
   render() {
     const { match, projects } = this.props;
 
+    let status;
+    if (projects.loading) {
+      status = <Loader />;
+    } else if (projects.error) {
+      status = (
+        <div className="alert alert-danger">
+          <i className="fa fa-exclamation-circle" /> { projects.error.message }
+        </div>
+      );
+    } else if (projects.data && projects.data.length === 0) {
+      return <Redirect to={`${match.url}/new`} />;
+    }
+
     return (
       <CenteredPage>
         <div>
@@ -28,10 +41,7 @@ class ProjectListPage extends React.Component {
 
         <hr />
 
-        { projects.loading ? <Loader /> : (
-            <ProjectList items={projects.data} />
-          )
-        }
+        { status ? status : <ProjectList items={projects.data} /> }
       </CenteredPage>
     );
   }
