@@ -27,7 +27,7 @@ code {
 .btn {
   color: #333;
   border-radius: 3px;
-  background: none;
+  background: #fff;
   border-width: 2px;
 }
 
