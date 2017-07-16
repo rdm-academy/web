@@ -4,13 +4,60 @@ import WorkflowEditor from 'components/WorkflowEditor';
 
 import * as actions from 'ducks/projectIndex';
 
+const defaultWorkflow = `# Get started with your workflow!
+
+# There are four types of node you can declare in a
+# workflow: data, compute, manual, and finding.
+# Compute and manual nodes must receive at least
+# one data input and produce one output data.
+# A finding node must point to at last one data input.
+
+# Below is an example of a valid workflow to get you
+# started. The console below shows validation errors
+# as you type to keep you on track.
+
+patient-record:
+  type: data
+  title: Patient record
+
+chart-review-ai:
+  type: compute
+  title: Chart review AI
+  input:
+    - patient-record
+  output:
+    - ai-prediction
+
+ai-prediction:
+  type: data
+  title: AI prediction
+
+chart-reviewer:
+  type: manual
+  title: Expert chart reviewer
+  input:
+    - patient-record
+  output:
+    - expert-call
+
+expert-call:
+  type: data
+  title: Expert call/result
+
+comparison:
+  type: finding
+  title: AI vs. expert comparison
+  input:
+    - ai-prediction
+    - expert-call
+`
 
 class WorkflowEditorContainer extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      source: '',
+      source: props.project.workflow.source,
       invalid: false,
       saving: false,
     };
@@ -29,7 +76,7 @@ class WorkflowEditorContainer extends React.Component {
     // Dispatch event.
     this.props.dispatch(actions.updateWorkflow({
       id: this.props.project.id,
-      source: this.state.source,
+      source: this.state.source || defaultWorkflow,
     }))
     .then(() => {
       this.props.history.push(`${this.props.baseUrl}/workflow`);
@@ -47,7 +94,7 @@ class WorkflowEditorContainer extends React.Component {
 
   render() {
     const { project } = this.props;
-    const { invalid, saving } = this.state;
+    const { source, invalid, saving } = this.state;
 
     return (
       <div className="ProjectPage-Body">
@@ -62,7 +109,8 @@ class WorkflowEditorContainer extends React.Component {
         </nav>
 
         <WorkflowEditor
-          source={project.workflow.source}
+          source={source}
+          defaultSource={defaultWorkflow}
           onChange={this.onChange} />
       </div>
     );
