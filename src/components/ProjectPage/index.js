@@ -50,22 +50,18 @@ class ProjectPage extends React.Component {
             <Redirect to={`${baseUrl}/workflow`} />
           )} />
 
-          <Route exact path={`${baseUrl}/workflow`} render={({ history, match }) => {
-            if (!project.workflow.source) {
-              return <Redirect to={`${baseUrl}/workflow/edit`} />;
-            }
+          <Route exact path={`${baseUrl}/workflow`} render={({ history, match }) => (
+            <Workflow
+              baseUrl={baseUrl}
+              match={match}
+              history={history}
+              project={project} />
+          )} />
 
-            return (
-              <Workflow
-                baseUrl={baseUrl}
-                history={history}
-                project={project} />
-            );
-          }} />
-
-          <Route exact path={`${baseUrl}/workflow/edit`} render={({ history }) => (
+          <Route exact path={`${baseUrl}/workflow/edit`} render={({ history, match }) => (
             <WorkflowEditor
               dispatch={this.props.dispatch}
+              match={match}
               baseUrl={baseUrl}
               history={history}
               project={project} />
