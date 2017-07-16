@@ -17,12 +17,12 @@ class NewProjectPage extends React.Component {
   }
 
   render() {
-    const { pending, success, error } = this.props;
+    const { pending, success, data, error } = this.props;
 
     if (success) {
       return (
         <Redirect
-          to={`/projects`} />
+          to={`/projects/${data.id}`} />
       );
     }
 
