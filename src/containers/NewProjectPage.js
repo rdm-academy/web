@@ -22,7 +22,7 @@ class NewProjectPage extends React.Component {
     if (success) {
       return (
         <Redirect
-          to={`/projects/${data.id}`} />
+          to={`/project/${data.id}`} />
       );
     }
 

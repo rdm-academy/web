@@ -32,7 +32,7 @@ const App = () => (
       <ProtectedRoute exact path="/profile" component={ProfilePage} />
       <ProtectedRoute exact path="/projects" component={ProjectListPage} />
       <ProtectedRoute exact path="/projects/new" component={NewProjectPage} />
-      <ProtectedRoute path="/projects/:project" component={ProjectPage} />
+      <ProtectedRoute path="/project/:project" component={ProjectPage} />
 
       <Route render={({ location }) => (
         <Page>

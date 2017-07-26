@@ -7,7 +7,7 @@ import timeSince from 'utils/time';
 const Project = ({ match, id, name, modified, description }) => (
   <div className="mb-2">
     <div>
-      <Link to={`${match.path}/${id}`}>
+      <Link to={`/project/${id}`}>
         <strong>{ name }</strong>
       </Link>
     </div>

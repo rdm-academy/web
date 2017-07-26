@@ -74,10 +74,11 @@ class ProjectPage extends React.Component {
               project={project} />
           )} />
 
-          <Route exact path={`${baseUrl}/workflow/node/:node`} render={({ history, match }) => (
+          <Route path={`${baseUrl}/workflow/node/:node`} render={({ history, match }) => (
             <NodeDetail
               baseUrl={baseUrl}
               history={history}
+              match={match}
               project={project}
               url={match.url}
               className="ProjectPage-Body"
