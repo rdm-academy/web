@@ -4,7 +4,7 @@ const intervals = [
     [60 * 60 * 24 * 7, 'week', 'weeks'],
     [60 * 60 * 24, 'day', 'days'],
     [60 * 60, 'hour', 'hours'],
-    [60, 'minute', 'minute'],
+    [60, 'minute', 'minutes'],
     [1, 'second', 'seconds']
 ];
 
