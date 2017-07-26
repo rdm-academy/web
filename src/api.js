@@ -165,7 +165,6 @@ class Client {
     })
   }
 
-
   getProjects = () => (
     this.call({
       path: '/projects'
@@ -175,6 +174,27 @@ class Client {
   getProject = ({ id }) => (
     this.call({
       path: `/projects/${id}`
+    })
+  )
+
+  getLog = ({ id }) => (
+    this.call({
+      path: `/projects/${id}/log`,
+    })
+  )
+
+  getLogPending = ({ id }) => (
+    this.call({
+      path: `/projects/${id}/log/pending`,
+    })
+  )
+
+  commitLog = ({ id, msg }) => (
+    this.call({
+      path: `/projects/${id}/log`,
+      body: {
+        msg,
+      }
     })
   )
 

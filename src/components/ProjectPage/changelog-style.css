@@ -1,0 +1,59 @@
+.Changelog-event {
+  font-weight: 300;
+}
+
+.Changelog-commit {
+  margin-bottom: 20px;
+}
+
+.Changelog-commit:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.Changelog-commit-author, .Changelog-event-author {
+  font-weight: 400;
+  color: #555;
+}
+
+.Changelog-commit-info {
+  color: #777;
+  font-size: 0.8em;
+}
+
+.Changelog-commit-events {
+  margin-bottom: 0;
+  border-left: 1px solid #ddd;
+}
+
+.Changelog-commit-events .Changelog-event {
+  margin-bottom: 10px;
+  font-size: 0.8em;
+  padding-left: 10px;
+}
+
+.Changelog-commit-events .Changelog-event .Changelog-event-info {
+  color: #777;
+  font-size: 0.9em;
+  margin-left: 15px;
+}
+
+.Changelog-commit-events {
+  margin-top: 5px;
+}
+
+.Changelog-event-type {
+  color: #333;
+  font-family: Hack, Menlo, Consolas, monospace;
+}
+
+.Changelog-pending {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.Changelog-pending .Changelog-commit-events {
+  margin-bottom: 15px;
+}

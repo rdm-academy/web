@@ -9,6 +9,7 @@ import Header from './Header';
 import Workflow from './Workflow';
 import WorkflowEditor from './WorkflowEditor';
 import NodeDetail from './NodeDetail';
+import Changelog from './Changelog';
 
 import './style.css';
 
@@ -48,6 +49,12 @@ class ProjectPage extends React.Component {
         <Switch>
           <Route exact path={baseUrl} render={({ history }) => (
             <Redirect to={`${baseUrl}/workflow`} />
+          )} />
+
+          <Route path={`${baseUrl}/log`} render={() => (
+            <div className="col-6 offset-3 ProjectPage-Body-Default">
+              <Changelog project={project.id} />
+            </div>
           )} />
 
           <Route exact path={`${baseUrl}/workflow`} render={({ history, match }) => (

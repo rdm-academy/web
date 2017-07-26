@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import timeSince from 'utils/time';
 
 
-export default ({ baseUrl, project = {}, className = '' }) => (
+export default ({ baseUrl, project = {}, pending = 0, className = '' }) => (
   <nav className={`${className}`}>
     <div>
       <h5 className="mr-3" style={{display: 'inline-block'}}>{ project.name }</h5> <small className="text-muted">{ project.description }</small>
@@ -18,6 +18,11 @@ export default ({ baseUrl, project = {}, className = '' }) => (
       <li className="nav-item">
         <NavLink to={`${baseUrl}/workflow`} exact={false} className="nav-link">
           <i className="fa fa-sitemap" /> Workflow
+        </NavLink>
+      </li>
+      <li className="nav-item">
+        <NavLink to={`${baseUrl}/log`} exact={false} className="nav-link">
+          <i className="fa fa-clock-o" /> Changelog
         </NavLink>
       </li>
       <li className="nav-item">
