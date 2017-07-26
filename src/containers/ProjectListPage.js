@@ -10,12 +10,31 @@ import * as actions from 'ducks/projectList';
 
 
 class ProjectListPage extends React.Component {
+  constructor() {
+    super();
+
+    this.status = {
+      authorized: true,
+    };
+  }
+
   componentDidMount() {
-    this.props.dispatch(actions.getProjects());
+    this.props.dispatch(actions.getProjects())
+      .catch((error) => {
+        if (error.status === 401) {
+          this.setState({
+            authorized: false,
+          });
+        }
+      });
   }
 
   render() {
     const { match, projects } = this.props;
+
+    if (!this.status.authorized) {
+      return <Redirect to={`/login`} />;
+    }
 
     let status;
     if (projects.loading) {
