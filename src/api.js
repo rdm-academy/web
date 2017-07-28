@@ -224,6 +224,30 @@ class Client {
       },
     })
   )
+
+  getNode = ({ project, id }) => (
+    this.call({
+      path: `/projects/${project}/nodes/${id}`,
+    })
+  )
+
+  updateNode = ({ project, id, ...props }) => (
+    this.call({
+      method: 'PUT',
+      path: `/projects/${project}/nodes/${id}`,
+      body: props,
+    })
+  )
+
+  nodeUploadFiles = ({ project, id, files }, handlers) => (
+    this.callForm({
+      path: `/projects/${project}/nodes/${id}/upload`,
+      data: {
+        files: files,
+      },
+      handlers,
+    })
+  )
 }
 
 export default {
