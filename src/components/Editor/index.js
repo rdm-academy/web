@@ -43,6 +43,7 @@ class Editor extends React.Component {
           }}
           options={{
             mode: 'markdown',
+            lineWrapping: true,
             tabSize: 2,
             lineNumbers: false,
             inputStyle: 'contenteditable',
