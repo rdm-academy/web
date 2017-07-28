@@ -5,6 +5,8 @@ import cytoscapeDagre from 'cytoscape-dagre';
 // Register Dagre layout algorithm.
 cytoscapeDagre(cytoscape);
 
+const defaultZoom = 0.8;
+
 
 const parseData = (data = {}) => {
   if (typeof data !== 'object') return [];
@@ -23,6 +25,7 @@ const parseData = (data = {}) => {
         title: node.title,
       },
       classes: node.type,
+      grabbable: false,
     });
 
     // Inputs this compute, manual, or finding node requires.
@@ -69,6 +72,12 @@ const renderCytoscape = (container, elements) => {
     },
     style: [
       {
+        selector: 'core',
+        style: {
+          activeBgSize: 0,
+        }
+      },
+      {
         selector: 'node',
         style: {
           backgroundColor: '#fff',
@@ -77,12 +86,12 @@ const renderCytoscape = (container, elements) => {
           shape: 'roundrectangle',
           borderWidth: '3px',
           borderStyle: 'solid',
-          borderColor: '#ccc',
+          borderColor: '#aaa',
           padding: '20px',
           label: 'data(title)',
           color: '#111',
           fontFamily: '"Helvetica Neue"',
-          fontSize: '16px',
+          fontSize: '18px',
           fontWeight: 400,
           textHalign: 'center',
           textValign: 'center',
@@ -100,21 +109,17 @@ const renderCytoscape = (container, elements) => {
         },
       },
       {
-        selector: 'node.active',
-        style: {
-          borderStyle: 'dashed',
-        },
-      },
-      {
         selector: 'node.data',
         style: {
           borderColor: '#0275d8',
+          overlayColor: '#0275d8',
         },
       },
       {
         selector: 'node.compute',
         style: {
-          borderColor: 'gold',
+          borderColor: '#FFD700',
+          overlayColor: '#FFD700',
         },
       },
       {
@@ -125,7 +130,46 @@ const renderCytoscape = (container, elements) => {
       {
         selector: 'node.finding',
         style: {
-          borderColor: 'saddlebrown',
+          borderColor: '#8B4513',
+          overlayColor: '#8B4513',
+        },
+      },
+      {
+        selector: 'node.data.inactive',
+        style: {
+          borderColor: '#8bc8fd',
+        },
+      },
+      {
+        selector: 'node.compute.inactive',
+        style: {
+          borderColor: '#ffef99',
+        },
+      },
+      {
+        selector: 'node.manual.inactive',
+        style: {
+          borderColor: '#ddd',
+        },
+      },
+      {
+        selector: 'node.finding.inactive',
+        style: {
+          borderColor: '#eeaf83',
+        },
+      },
+      {
+        selector: 'node.inactive',
+        style: {
+          color: '#999',
+        },
+      },
+      {
+        selector: 'node.active',
+        style: {
+          // borderColor: '#333333',
+          // backgroundColor: '#f9f9f9',
+          overlayOpacity: 0,
         },
       },
       {
@@ -180,7 +224,12 @@ const renderCytoscape = (container, elements) => {
       evt.target.removeClass('hover');
     });
 
-  return g;
+  return g
+    .zoom(defaultZoom)
+    .center()
+    .pan({
+      y: 20,
+    });
 }
 
 
@@ -189,16 +238,44 @@ class WorkflowGraph extends React.Component {
   focusNode = ({ id }) => {
     const node = this.cy.$id(id);
 
+    const pos = node.renderedBoundingBox();
+    const height = this.cy.height();
+    const width = this.cy.width();;
+
+    const panBy = {};
+    const padding = 50;
+
+    // Left and right.
+    if (pos.x1 < 0) {
+      panBy.x = -pos.x1 + padding;
+    } else if (pos.x2 > width) {
+      panBy.x = width - pos.x2 - padding;
+    }
+
+    // Top and bottom.
+    if (pos.y1 < 0) {
+      panBy.y = -pos.y1 + padding;
+    } else if (pos.y2 > height) {
+      panBy.y = height - pos.y2 - padding;
+    }
+
     this.cy.batch(() => {
       this.cy.$('node.active')
         .removeClass('active');
 
-      node.addClass('active');
+      this.cy.$('node')
+        .addClass('inactive');
 
-      this.cy
-        .zoom(0.9)
-        .center(node)
-        .panBy({x: -200});
+      node.addClass('active').removeClass('inactive')
+
+      if (panBy.x || panBy.y) {
+        this.cy.animate({
+          panBy: panBy,
+          zoom: defaultZoom,
+          duration: 350,
+          easing: 'ease-in-out',
+        });
+      }
     });
   }
 
@@ -233,22 +310,25 @@ class WorkflowGraph extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    this.cy = renderCytoscape(
-      this.el,
-      parseData(this.props.data)
-    );
+  componentDidUpdate(prevProps) {
+    const dataChanged = this.props.data != prevProps.data
+    if (dataChanged) {
+      this.cy = renderCytoscape(
+        this.el,
+        parseData(this.props.data)
+      );
 
-    if (this.props.onNodeClick) {
-      this.cy.on('tap', 'node', (event) => {
-        this.props.onNodeClick(event);
-      });
-    }
+      if (this.props.onNodeClick) {
+        this.cy.on('tap', 'node', (event) => {
+          this.props.onNodeClick(event);
+        });
+      }
 
-    if (this.props.onEdgeClick) {
-      this.cy.on('tap', 'edge', (event) => {
-        this.props.onEdgeClick(event);
-      });
+      if (this.props.onEdgeClick) {
+        this.cy.on('tap', 'edge', (event) => {
+          this.props.onEdgeClick(event);
+        });
+      }
     }
 
     if (this.props.node) {
