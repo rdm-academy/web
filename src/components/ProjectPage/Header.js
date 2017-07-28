@@ -25,16 +25,6 @@ export default ({ baseUrl, project = {}, pending = 0, className = '' }) => (
           <i className="fa fa-clock-o" /> Changelog
         </NavLink>
       </li>
-      <li className="nav-item">
-        <NavLink to={`${baseUrl}/team`} exact={false} className="nav-link">
-          <i className="fa fa-users" /> Team
-        </NavLink>
-      </li>
-      <li className="nav-item">
-        <NavLink to={`${baseUrl}/settings`} exact={false} className="nav-link">
-          <i className="fa fa-cog" /> Settings
-        </NavLink>
-      </li>
     </ul>
   </nav>
 );
