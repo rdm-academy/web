@@ -5,59 +5,83 @@ import api from 'api';
 
 import './changelog-style.css';
 
-const ProjectCreatedEvent = ({ author, data, time }) => (
+const ProjectCreatedEvent = ({ data }) => (
   <div>
     Project <strong>{ data.name }</strong> created
   </div>
 )
 
-const NodeAddedEvent = ({ author, data, time }) => (
+const NodeAddedEvent = ({ data }) => (
   <div>
     Added <strong>{ data.node.type }</strong> node <strong>{ data.node.title || data.node.key }</strong>
   </div>
 )
 
-const NodeRemovedEvent = ({ author, data, time }) => (
+const NodeRemovedEvent = ({ data }) => (
   <div>
     Removed <strong>{ data.node.type }</strong> node <strong>{ data.node.title || data.node.key }</strong>
   </div>
 )
 
-const NodeRenamedEvent = ({ author, data, time }) => (
+const NodeRenamedEvent = ({ data }) => (
   <div>
     Renamed node from <strong>{ data.node.from }</strong> to <strong>{ data.node.to }</strong>
   </div>
 )
 
-const NodeInputAddedEvent = ({ author, data, time }) => (
+const NodeInputAddedEvent = ({ data }) => (
   <div>
     Added input <strong>{ data.node.input }</strong> to <strong>{ data.node.key }</strong>
   </div>
 )
 
-const NodeInputRemovedEvent = ({ author, data, time }) => (
+const NodeInputRemovedEvent = ({ data }) => (
   <div>
     Removed input <strong>{ data.node.input }</strong> from <strong>{ data.node.key }</strong>
   </div>
 )
 
-const NodeOutputAddedEvent = ({ author, data, time }) => (
+const NodeOutputAddedEvent = ({ data }) => (
   <div>
     Added output <strong>{ data.node.output }</strong> to <strong>{ data.node.key }</strong>
   </div>
 )
 
-const NodeOutputRemovedEvent = ({ author, data, time }) => (
+const NodeOutputRemovedEvent = ({ data }) => (
   <div>
     Removed output <strong>{ data.node.output }</strong> from <strong>{ data.node.key }</strong>
   </div>
 )
 
-const DefaultEvent = ({ time, type, author, data }) => (
+const DefaultEvent = ({ type }) => (
   <div className="Changelog-event">
     Event <span className="Changelog-event-type">{ type }</span> occurred
   </div>
 )
+
+// TODO: show option to open a diff of the text.
+const NodeNotesChangedEvent = ({ data }) => (
+  <div>
+    Updated <strong>notes</strong> for <strong>{ data.id }</strong>
+  </div>
+)
+
+
+const NodeFilesAddedEvent = ({ data }) => {
+  const len = data.files.length;
+  return (
+    <div>
+      Added {len} {len === 1 ? 'file' : 'files'} to <strong>{data.id}</strong>
+      <ul style={{marginBottom: '5px'}}>
+        {
+          data.files.map((f) => (
+            <li key={f.id || f.ID}>{f.name || f.Name}</li>
+          ))
+        }
+      </ul>
+    </div>
+  );
+}
 
 const eventComponents = {
   'project.created': ProjectCreatedEvent,
@@ -68,6 +92,8 @@ const eventComponents = {
   'node.input-removed': NodeInputRemovedEvent,
   'node.output-added': NodeOutputAddedEvent,
   'node.output-removed': NodeOutputRemovedEvent,
+  'node.updated-notes': NodeNotesChangedEvent,
+  'node.added-files': NodeFilesAddedEvent,
 };
 
 const Event = (props) => {
