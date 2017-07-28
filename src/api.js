@@ -137,12 +137,19 @@ class Client {
     return this.do({ method, url, body, handlers });
   }
 
-  callForm = ({ path, data , handlers }) => {
+  callForm = ({ path, data, handlers }) => {
     const body = new FormData();
 
-    Object.keys(data).forEach((key) => (
-      body.append(key, data[key])
-    ));
+    Object.keys(data).forEach((key) => {
+      const val = data[key];
+      if (val.length !== undefined) {
+        data[key].forEach((val) => {
+          body.append(key, val);
+        });
+        return;
+      }
+      body.append(key, val);
+    });
 
     return this.call({
       path,
