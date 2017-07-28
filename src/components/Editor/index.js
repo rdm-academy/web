@@ -10,11 +10,11 @@ import './style.css';
 
 
 class Editor extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      text: '',
+      text: props.text,
       focused: false,
     };
   }
@@ -40,6 +40,9 @@ class Editor extends React.Component {
                 focused: false,
               });
             }
+            if (this.props.onFocusChange) {
+              this.props.onFocusChange(focused, this.state.text);
+            }
           }}
           options={{
             mode: 'markdown',
@@ -54,14 +57,14 @@ class Editor extends React.Component {
 
     return (
       <Markdown
+        className="Editor Editor-preview"
         text={this.state.text}
         emptyText={this.props.emptyText}
         onClick={() => {
           this.setState({
             focused: true,
           });
-        }}
-        className="Editor Editor-preview" />
+        }} />
     );
   }
 }
