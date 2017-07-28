@@ -29,12 +29,15 @@
 }
 
 .Editor.Editor-preview pre {
-  background-color: #eee;
-  border-radius: 3px;
+  background-color: #f6f6f6;
   padding: 5px;
   font-size: 12px;
 }
 
 .Editor.Editor-preview :last-child {
   margin-bottom: 0;
+}
+
+.Editor.placeholder {
+  color: #999;
 }

@@ -7,7 +7,7 @@ marked.setOptions({
 
 export default ({ text, emptyText = '', className = 'markdown', ...props }) => {
   if (!text) {
-    return <div className={className} {...props}>{emptyText}</div>;
+    return <div className={`${className} placeholder`} {...props}>{emptyText}</div>;
   }
 
   return (
